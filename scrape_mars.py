@@ -1,6 +1,14 @@
 from splinter import Browser
 from bs4 import BeautifulSoup as bs
 import time
+import pandas as pd
+from bs4 import BeautifulSoup
+import requests
+from splinter import Browser
+from urllib.parse import urlsplit
+import os 
+import time
+
 
 
 
@@ -28,15 +36,63 @@ def scrape_info():
     soup = bs(html, "html.parser")
 
     
-    # collect the first news title
+    # 1-NASA Mars News
     news_title = soup.find('div',class_='content_title').text
+    news_p = soup.find('div',class_='article_teaser_body').text
+
+
+    # 2-JPL Mars Space Images - Featured Image (scrap the image url)
+    executable_path = {'executable_path': 'chromedriver.exe'}
+    browser = Browser('chrome', **executable_path, headless=False)
+    url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
+    browser.visit(url)
+    html = browser.html
+    soup = BeautifulSoup(html, 'html.parser')
+   
+    image_url = soup.find('article')['style']
+    image_url1 = image_url.replace("background-image: url('","")
+    image_url2 = image_url1.replace("');","")
+    img_path = 'https://www.jpl.nasa.gov'
+    space_img = img_path + image_url2
+   
+
+
+    #  3- Mars Weather
+    executable_path = {'executable_path': 'chromedriver.exe'}
+    browser = Browser('chrome', **executable_path, headless=False)
+    url = 'https://twitter.com/marswxreport?lang=en'
+    browser.visit(url)
+    html = browser.html
+    soup = BeautifulSoup(html, 'html.parser')
+    weather = soup.find('p', class_='TweetTextSize TweetTextSize--normal js-tweet-text tweet-text').text
+    mars_weather = weather.replace("hPapic.twitter.com/8SrPjAhpGZ","")
+
+
+    # 4- Mars Facts
+
+    url = "https://space-facts.com/mars/"
+    tables = pd.read_html(url)
+    df = tables[0]
+    df.columns = ['', 'value']
+    html_table = df.to_html()
+    html_table_clean = html_table.replace("\n","")
+    html_table_clean 
     
+    
+    
+
+
+
+
 
 
     # Store data in a dictionary
     mars_news = {
         "news_title":news_title,
-         
+        "news_p":news_p,
+        "space_img":space_img,
+        "mars_weather":mars_weather,
+        "html_table_clean ":html_table_clean , 
     }
 
 
@@ -75,8 +131,7 @@ def scrape_info():
 
 
 
-#2-JPL Mars Space Images - Featured Image (scrap the image url)
-    #url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
+
 
 # 3- Mars Weather
     #url = 'https://twitter.com/marswxreport?lang=en'
