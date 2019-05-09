@@ -74,6 +74,7 @@ def scrape_info():
     tables = pd.read_html(url)
     df = tables[0]
     df.columns = ['', 'value']
+    df.set_index('', inplace=True)
     html_table = df.to_html()
     html_table_clean = html_table.replace("\n","")
     html_table_clean 
@@ -92,7 +93,7 @@ def scrape_info():
         "news_p":news_p,
         "space_img":space_img,
         "mars_weather":mars_weather,
-        "html_table_clean ":html_table_clean , 
+        "html_table_clean":html_table_clean , 
     }
 
 

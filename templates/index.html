@@ -42,7 +42,9 @@
           <p>{{ vacation.mars_weather }}</p>
 
           <h4>Mars Facts</h4>
-          <div>{{ vacation.html_table_clean }}</div>
+          <div style="max-width: 420px; max-height: 160px; font-size: 14px; margin-bottom: 45px;">
+            {{ vacation.html_table_clean|safe }}
+          </div>
         
       </div> 
 
